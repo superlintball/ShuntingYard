@@ -13,15 +13,8 @@ class Token
 		Token(char newToken)
 		{
 			token = newToken;
-
-			//all numbers are type 0
-			if(isdigit(token))
-			{
-				type = 0;
-			}
-			
 			//all operators are type 1
-			else if(token == '+' || token == '-')
+			if(token == '+' || token == '-')
 			{
 				precedence = 1;
 				associativity = 1;
@@ -44,18 +37,27 @@ class Token
 				type = 2;
 			}
 		}
+		Token(int newNumber)
+		{
+			//all numbers are type 0
+			type = 0;
+			number = newNumber;
+		}
 		char getToken() {return token;}
 		int getPrec() {return precedence;}
 		int getAssoc() {return associativity;}
 		int getType() {return type;}
+		int getNumber() {return number;}
 	private:
 		char token;
 
 		//numbers and parentheses don't have precedence or associativity, so default to 0
 		int precedence = 0;
 		int associativity = 0;
-
 		int type;
+
+		int number = NULL;
+
 };
 
 #endif
