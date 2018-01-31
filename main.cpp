@@ -67,7 +67,7 @@ int main()
 			expHead = push(expHead, token);
 		}
 	}
-	Node* test = expHead;
+/*	Node* test = expHead;
 	while(test != NULL)
 	{
 		if(test->getToken()->getType() == NUM)
@@ -84,7 +84,7 @@ int main()
 		}
 		test = test->getRight();
 	}
-
+*/
 	Node* current = expHead;
 	Node* fixHead = NULL;
 	Node* stackHead = NULL;
@@ -92,14 +92,14 @@ int main()
 	{
 		if(current->getToken()->getType() == NUM)
 		{
-cout << "started number " << current->getToken()->getNumber() << endl;
+//cout << "started number " << current->getToken()->getNumber() << endl;
 			push(fixHead, current->getToken());
-cout << "number success" << endl;
+//cout << "number success" << endl;
 		}
 		else if(current->getToken()->getType() == PAR)
 		{
-cout << "started parenthesis " <<  current->getToken()->getChar() << endl;
-					cout << "The end of the stack is " << recursiveEnd(stackHead)->getToken()->getChar() << endl;
+//cout << "started parenthesis " <<  current->getToken()->getChar() << endl;
+//cout << "The end of the stack is " << recursiveEnd(stackHead)->getToken()->getChar() << endl;
 
 			if(current->getToken()->getChar() == '(')
 			{
@@ -126,15 +126,15 @@ cout << "started parenthesis " <<  current->getToken()->getChar() << endl;
 					stackHead = NULL;
 				}
 			}
-					cout << "The end of the stack is " << recursiveEnd(stackHead)->getToken()->getChar() << endl;
-cout << "parenthesis success" << endl;
+//cout << "The end of the stack is " << recursiveEnd(stackHead)->getToken()->getChar() << endl;
+//cout << "parenthesis success" << endl;
 		}
 		else
 		{
-cout << "started operator " <<  current->getToken()->getChar() << endl;
+//cout << "started operator " <<  current->getToken()->getChar() << endl;
 			if(stackHead != NULL)
 			{
-			cout << "stack head isn't null!" << endl;
+//cout << "stack head isn't null!" << endl;
 				while(((recursiveEnd(stackHead)->getToken()->getPrec() >
 					current->getToken()->getPrec()) ||
 					(recursiveEnd(stackHead)->getToken()->getPrec() ==
@@ -142,7 +142,7 @@ cout << "started operator " <<  current->getToken()->getChar() << endl;
 					recursiveEnd(stackHead)->getToken()->getAssoc() == LEFT)) &&
 					(recursiveEnd(stackHead)->getToken()->getChar() != '('))
 				{
-					cout << "The end of the stack is " << recursiveEnd(stackHead)->getToken()->getChar() << endl;
+//cout << "The end of the stack is " << recursiveEnd(stackHead)->getToken()->getChar() << endl;
 					push(fixHead, recursiveEnd(stackHead)->getToken());
 					Node* end = recursiveEnd(stackHead);
 					if(end->getLeft() != NULL)
@@ -155,13 +155,12 @@ cout << "started operator " <<  current->getToken()->getChar() << endl;
 						stackHead = NULL;
 						break;
 					}
-	cout << "The end of the stack is " << recursiveEnd(stackHead)->getToken()->getChar() << endl;
-
+//cout << "The end of the stack is " << recursiveEnd(stackHead)->getToken()->getChar() << endl;
 				}
-				cout << "I made it out alive" << endl;
+//cout << "I made it out alive" << endl;
 			}
 			push(stackHead, current->getToken());
-cout << "operator success" << endl;
+//cout << "operator success" << endl;
 		}
 		Node* prev = current;
 		current = current->getRight();
@@ -187,14 +186,15 @@ cout << "operator success" << endl;
 	{
 		if(current->getToken()->getType() == NUM)
 		{
-			cout << current->getToken()->getNumber() << endl;
+			cout << current->getToken()->getNumber() << " ";
 		}
 		else
 		{
-			cout << current->getToken()->getChar() << endl;
+			cout << current->getToken()->getChar() << " ";
 		}
 		current = current->getRight();
 	}
+	cout << endl << "done" << endl;
 	return 0;
 }
 
