@@ -6,10 +6,11 @@
 using namespace std;
 
 //define list class
-class List()
+class List
 {
 	public:
 		List(Token* newToken) {token = newToken;}
+		Token* getToken() {return token;}
 		void setPrev(List* node) {previous = node;}
 		void setNext(List* node) {next = node;}
 		List* getPrev() {return previous;}

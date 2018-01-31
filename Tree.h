@@ -1,25 +1,25 @@
-#ifndef TREEH
-#define TREEH
+#ifndef NODEH
+#define NODEH
 
 #include "Token.h"
 
 using namespace std;
 
 //define tree class
-class Tree()
+class Node
 {
 	public:
-		Tree(Token* newToken) {token = newToken;}
-		void setLeft(Tree* node) {left = node;}
-		void setRight(Tree* node) {right = node;}
+		Node(Token* newToken) {token = newToken;}
+		void setLeft(Node* node) {left = node;}
+		void setRight(Node* node) {right = node;}
 		Token* getToken() {return token;}
-		Tree* getLeft() {return left;}
-		Tree* getRight() {return right;}
-		~Tree(){token = NULL;}
+		Node* getLeft() {return left;}
+		Node* getRight() {return right;}
+		~Node(){token = NULL;}
 
 	private:
 		Token* token;
-		Tree* left;
-		Tree* right;
+		Node* left;
+		Node* right;
 };
 #endif

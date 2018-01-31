@@ -10,7 +10,8 @@ class Token
 {
 	public:
 		//token constructor; defines properties for each type of operator
-		Token(char newToken)
+		Token(){}
+		void setChar(char newToken)
 		{
 			token = newToken;
 			//all operators are type 1
@@ -37,13 +38,13 @@ class Token
 				type = 2;
 			}
 		}
-		Token(int newNumber)
+		void setNum(int newNumber)
 		{
 			//all numbers are type 0
 			type = 0;
 			number = newNumber;
 		}
-		char getToken() {return token;}
+		char getChar() {return token;}
 		int getPrec() {return precedence;}
 		int getAssoc() {return associativity;}
 		int getType() {return type;}
@@ -56,7 +57,7 @@ class Token
 		int associativity = 0;
 		int type;
 
-		int number = NULL;
+		int number = -1;
 
 };
 
