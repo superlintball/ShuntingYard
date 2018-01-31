@@ -18,6 +18,7 @@ const int PAR = 2; //parenthesis
 
 Node* recursiveEnd(Node* head);
 Node* push(Node* &head, Token* toAdd);
+void pop(Node* head);
 
 int main()
 {
@@ -115,8 +116,15 @@ cout << "started parenthesis " <<  current->getToken()->getChar() << endl;
 				}
 				delete recursiveEnd(stackHead)->getToken();
 				Node* end = recursiveEnd(stackHead);
-				end->getLeft()->setRight(NULL);
-				delete end;
+				if(end->getLeft() != NULL)
+				{
+					end->getLeft()->setRight(NULL);
+					delete end;
+				}
+				else
+				{
+					stackHead = NULL;
+				}
 			}
 					cout << "The end of the stack is " << recursiveEnd(stackHead)->getToken()->getChar() << endl;
 cout << "parenthesis success" << endl;
@@ -137,8 +145,16 @@ cout << "started operator " <<  current->getToken()->getChar() << endl;
 					cout << "The end of the stack is " << recursiveEnd(stackHead)->getToken()->getChar() << endl;
 					push(fixHead, recursiveEnd(stackHead)->getToken());
 					Node* end = recursiveEnd(stackHead);
-					end->getLeft()->setRight(NULL);
-					delete end;
+					if(end->getLeft() != NULL)
+					{
+						end->getLeft()->setRight(NULL);
+						delete end;
+					}
+					else
+					{
+						stackHead = NULL;
+						break;
+					}
 	cout << "The end of the stack is " << recursiveEnd(stackHead)->getToken()->getChar() << endl;
 
 				}
@@ -162,7 +178,7 @@ cout << "operator success" << endl;
 		}
 		else
 		{
-			break;
+			stackHead = NULL;
 		}
 	}
 
@@ -218,3 +234,17 @@ Node* push(Node* &head, Token* toAdd)
 	return head;
 }
 
+//remove the last object from a linked list
+void pop(Node* head)
+{
+	Node* end = recursiveEnd(head);
+	if(end->getLeft() != NULL)
+	{
+		end->getLeft()->setRight(NULL);
+		delete end;
+	}
+	else
+	{
+		head = NULL;
+	}
+}
