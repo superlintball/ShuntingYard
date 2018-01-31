@@ -1,6 +1,6 @@
 #include <iostream>
 #include "Token.h"
-#include "Tree.h"
+#include "Node.h"
 #include <cstring>
 #include <stdlib.h>
 
@@ -82,7 +82,7 @@ int main()
 		{
 			cout << "operator: " << test->getToken()->getChar() << endl;
 		}
-		test = test->getRight();
+		test = test->getNext();
 	}
 */
 	Node* current = expHead;
@@ -111,14 +111,14 @@ int main()
 				{
 					push(fixHead, recursiveEnd(stackHead)->getToken());
 					Node* end = recursiveEnd(stackHead);
-					end->getLeft()->setRight(NULL);
+					end->getPrev()->setNext(NULL);
 					delete end;
 				}
 				delete recursiveEnd(stackHead)->getToken();
 				Node* end = recursiveEnd(stackHead);
-				if(end->getLeft() != NULL)
+				if(end->getPrev() != NULL)
 				{
-					end->getLeft()->setRight(NULL);
+					end->getPrev()->setNext(NULL);
 					delete end;
 				}
 				else
@@ -145,9 +145,9 @@ int main()
 //cout << "The end of the stack is " << recursiveEnd(stackHead)->getToken()->getChar() << endl;
 					push(fixHead, recursiveEnd(stackHead)->getToken());
 					Node* end = recursiveEnd(stackHead);
-					if(end->getLeft() != NULL)
+					if(end->getPrev() != NULL)
 					{
-						end->getLeft()->setRight(NULL);
+						end->getPrev()->setNext(NULL);
 						delete end;
 					}
 					else
@@ -163,16 +163,16 @@ int main()
 //cout << "operator success" << endl;
 		}
 		Node* prev = current;
-		current = current->getRight();
+		current = current->getNext();
 		delete prev;
 	}
 	while(stackHead != NULL)
 	{
 		push(fixHead, recursiveEnd(stackHead)->getToken());
 		Node* end = recursiveEnd(stackHead);
-		if(end->getLeft() != NULL)
+		if(end->getPrev() != NULL)
 		{
-			end->getLeft()->setRight(NULL);
+			end->getPrev()->setNext(NULL);
 			delete end;
 		}
 		else
@@ -192,7 +192,7 @@ int main()
 		{
 			cout << current->getToken()->getChar() << " ";
 		}
-		current = current->getRight();
+		current = current->getNext();
 	}
 	cout << endl << "done" << endl;
 	return 0;
@@ -201,9 +201,9 @@ int main()
 //find the last node in a list recursively
 Node* recursiveEnd(Node* head)
 {
-	if(head->getRight() != NULL)
+	if(head->getNext() != NULL)
 	{
-		return recursiveEnd(head->getRight());
+		return recursiveEnd(head->getNext());
 	}
 	else
 	{
@@ -220,16 +220,16 @@ Node* push(Node* &head, Token* toAdd)
 	if(head == NULL)
 	{
 		head = node;
-		head->setRight(NULL);
-		head->setLeft(NULL);
+		head->setNext(NULL);
+		head->setPrev(NULL);
 	}
 	//otherwise add it to the end
 	else
 	{
 		Node* end = recursiveEnd(head);
-		end->setRight(node);
-		node->setRight(NULL);
-		node->setLeft(end);
+		end->setNext(node);
+		node->setNext(NULL);
+		node->setPrev(end);
 	}
 	return head;
 }
@@ -238,9 +238,9 @@ Node* push(Node* &head, Token* toAdd)
 void pop(Node* head)
 {
 	Node* end = recursiveEnd(head);
-	if(end->getLeft() != NULL)
+	if(end->getPrev() != NULL)
 	{
-		end->getLeft()->setRight(NULL);
+		end->getPrev()->setNext(NULL);
 		delete end;
 	}
 	else
