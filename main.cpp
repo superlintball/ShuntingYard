@@ -1,8 +1,17 @@
+/* 
+ * Author: Raveen Karnik
+ * Date: February 6, 2018
+ * This program uses the shunting yard algorithm to convert an entered mathematical expression
+ * from infix notation to postfix notation. It then uses the postfix notation to create a binary
+ * expression tree and, from there, can output the expression in either postfix, prefix, or infix.
+ */
+
 #include <iostream>
 #include "Token.h"
 #include "Node.h"
 #include <cstring>
 #include <stdlib.h>
+#include <vector>
 
 using namespace std;
 
@@ -16,9 +25,16 @@ const int NUM = 0; //number
 const int OP = 1; //operator
 const int PAR = 2; //parenthesis
 
+//global tokens vector for the prefix calculation
+vector<Token*> tokens;
+
+//function prototypes
 Node* recursiveEnd(Node* head);
 Node* push(Node* &head, Token* toAdd);
 void pop(Node* head);
+void printPostfix(Node* head);
+void printInfix(Node* head);
+void printPrefix(Node* head);
 
 int main()
 {
@@ -85,28 +101,29 @@ int main()
 		test = test->getNext();
 	}
 */
+	//convert the expression in infix to postfix
 	Node* current = expHead;
 	Node* fixHead = NULL;
 	Node* stackHead = NULL;
 	while(current != NULL)
 	{
+		//if the token is  a number, immediately add it to the postfix notation
 		if(current->getToken()->getType() == NUM)
 		{
-//cout << "started number " << current->getToken()->getNumber() << endl;
 			push(fixHead, current->getToken());
-//cout << "number success" << endl;
 		}
+		//if the token is a parenthesis
 		else if(current->getToken()->getType() == PAR)
 		{
-//cout << "started parenthesis " <<  current->getToken()->getChar() << endl;
-//cout << "The end of the stack is " << recursiveEnd(stackHead)->getToken()->getChar() << endl;
-
+			//push any open parenthesis onto the stack
 			if(current->getToken()->getChar() == '(')
 			{
 				push(stackHead, current->getToken());
 			}
+			//if it's a close parenthesis
 			else
 			{
+				//pop operators off the stack until an open parenthesis is reached
 				while(recursiveEnd(stackHead)->getToken()->getType() != PAR)
 				{
 					push(fixHead, recursiveEnd(stackHead)->getToken());
@@ -126,15 +143,14 @@ int main()
 					stackHead = NULL;
 				}
 			}
-//cout << "The end of the stack is " << recursiveEnd(stackHead)->getToken()->getChar() << endl;
-//cout << "parenthesis success" << endl;
 		}
+		//if the token is an operator
 		else
 		{
-//cout << "started operator " <<  current->getToken()->getChar() << endl;
+			//if there is an operator on the stack
 			if(stackHead != NULL)
 			{
-//cout << "stack head isn't null!" << endl;
+				//pop operators off the stack depending on precedence and associativity
 				while(((recursiveEnd(stackHead)->getToken()->getPrec() >
 					current->getToken()->getPrec()) ||
 					(recursiveEnd(stackHead)->getToken()->getPrec() ==
@@ -142,7 +158,6 @@ int main()
 					recursiveEnd(stackHead)->getToken()->getAssoc() == LEFT)) &&
 					(recursiveEnd(stackHead)->getToken()->getChar() != '('))
 				{
-//cout << "The end of the stack is " << recursiveEnd(stackHead)->getToken()->getChar() << endl;
 					push(fixHead, recursiveEnd(stackHead)->getToken());
 					Node* end = recursiveEnd(stackHead);
 					if(end->getPrev() != NULL)
@@ -155,17 +170,16 @@ int main()
 						stackHead = NULL;
 						break;
 					}
-//cout << "The end of the stack is " << recursiveEnd(stackHead)->getToken()->getChar() << endl;
 				}
-//cout << "I made it out alive" << endl;
 			}
 			push(stackHead, current->getToken());
-//cout << "operator success" << endl;
 		}
+		//move on to the next node
 		Node* prev = current;
 		current = current->getNext();
 		delete prev;
 	}
+	//pop the rest of the tokens off the stack until empty
 	while(stackHead != NULL)
 	{
 		push(fixHead, recursiveEnd(stackHead)->getToken());
@@ -180,21 +194,57 @@ int main()
 			stackHead = NULL;
 		}
 	}
-
+	cout << endl;
+	
+	//put the list in an expression tree
+	Node* treeTop = recursiveEnd(fixHead);
 	current = fixHead;
 	while(current != NULL)
 	{
-		if(current->getToken()->getType() == NUM)
+		if(current->getToken()->getType() == OP)
 		{
-			cout << current->getToken()->getNumber() << " ";
-		}
-		else
-		{
-			cout << current->getToken()->getChar() << " ";
+			current->setLeft(current->getPrev()->getPrev());
+			current->setRight(current->getPrev());
+			current->setPrev(current->getLeft()->getPrev());
+			if(current->getPrev() != NULL)
+			{
+				current->getPrev()->setNext(current);
+			}
+			current->getLeft()->setPrev(NULL);
+			current->getLeft()->setNext(NULL);
+			current->getRight()->setPrev(NULL);
+			current->getRight()->setNext(NULL);
 		}
 		current = current->getNext();
 	}
-	cout << endl << "done" << endl;
+	
+	//ask the user what they want it converted to and print out that
+	cout << "Would you like the expression converted to POSTFIX, PREFIX, or INFIX?" << endl;
+	char input2[10];
+	cin >> input2;
+	if(!strcmp(input2, "POSTFIX") || !strcmp(input2, "postfix"))
+	{
+		printPostfix(treeTop);
+	}
+	else if(!strcmp(input2, "PREFIX") || !strcmp(input2, "prefix"))
+	{
+		printPrefix(treeTop);
+		for(int i = 1; i <= tokens.size(); i++)
+		{
+			if(tokens[tokens.size()-i]->getType() == NUM)
+			{
+				cout << tokens[tokens.size()-i]->getNumber() << " ";
+			}
+			else
+			{
+				cout << tokens[tokens.size()-i]->getChar() << " ";
+			}
+		}
+	}
+	else if(!strcmp(input2, "INFIX") || !strcmp(input2, "infix"))
+	{
+		printInfix(treeTop);
+	}
 	return 0;
 }
 
@@ -247,4 +297,62 @@ void pop(Node* head)
 	{
 		head = NULL;
 	}
+}
+
+//print postfix notation from a binary expression tree recursively
+void printPostfix(Node* head)
+{
+	if(head->getLeft() != NULL)
+	{
+		printPostfix(head->getLeft());
+	}
+	if(head->getRight() != NULL)
+	{
+		printPostfix(head->getRight());
+	}	
+	if(head->getToken()->getType() == NUM)
+	{
+		cout << head->getToken()->getNumber() << " ";
+	}
+	else
+	{
+		cout << head->getToken()->getChar() << " ";
+	}
+}
+
+//print infix notation from a binary expression tree recursively
+void printInfix(Node* head)
+{
+	if(head->getLeft() != NULL)
+	{
+	cout << "( ";
+		printInfix(head->getLeft());
+	}
+	if(head->getToken()->getType() == NUM)
+	{
+		cout << head->getToken()->getNumber() << " ";
+	}
+	else
+	{
+		cout << head->getToken()->getChar() << " ";
+	}
+	if(head->getRight() != NULL)
+	{
+		printInfix(head->getRight());
+		cout << ") ";
+	}
+}
+
+//create a vector to put the expression into prefix notation from a binary tree recursively
+void printPrefix(Node* head)
+{
+	if(head->getRight() != NULL)
+	{
+		printPrefix(head->getRight());
+	}
+	if(head->getLeft() != NULL)
+	{
+		printPrefix(head->getLeft());
+	}	
+	tokens.push_back(head->getToken());
 }
