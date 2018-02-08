@@ -35,6 +35,7 @@ void pop(Node* head);
 void printPostfix(Node* head);
 void printInfix(Node* head);
 void printPrefix(Node* head);
+void visualize(Node* head, int depth);
 
 int main()
 {
@@ -218,6 +219,10 @@ int main()
 		current = current->getNext();
 	}
 	
+	//visualize function test
+	//visualize(treeTop, 0);
+	//cout << endl;
+	
 	//ask the user what they want it converted to and print out that
 	cout << "Would you like the expression converted to POSTFIX, PREFIX, or INFIX?" << endl;
 	char input2[10];
@@ -355,4 +360,29 @@ void printPrefix(Node* head)
 		printPrefix(head->getLeft());
 	}	
 	tokens.push_back(head->getToken());
+}
+
+//print out the tree in a simple form
+void visualize(Node* head, int depth)
+{
+	for(int i = 0; i < depth; i++)
+	{
+		cout << "   ";
+	}
+	if(head->getToken()->getType() == NUM)
+	{
+		cout << head->getToken()->getNumber() << endl;
+	}
+	else
+	{
+		cout << head->getToken()->getChar() << endl;
+	}
+	if(head->getLeft() != NULL)
+	{
+		visualize(head->getLeft(), depth+1);
+	}
+	if(head->getRight() != NULL)
+	{
+		visualize(head->getRight(), depth+1);
+	}
 }
