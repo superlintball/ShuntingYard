@@ -67,6 +67,7 @@ int main()
 			{
 				number[j] = input[start+j];
 			}
+			number[length] = '\0';
 			//convert the isolated char pointer into an integer
 			int num = atoi(number);
 
