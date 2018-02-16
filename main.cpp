@@ -31,7 +31,6 @@ vector<Token*> tokens;
 //function prototypes
 Node* recursiveEnd(Node* head);
 Node* push(Node* &head, Token* toAdd);
-void pop(Node* head);
 void printPostfix(Node* head);
 void printInfix(Node* head);
 void printPrefix(Node* head);
@@ -287,21 +286,6 @@ Node* push(Node* &head, Token* toAdd)
 		node->setPrev(end);
 	}
 	return head;
-}
-
-//remove the last object from a linked list
-void pop(Node* head)
-{
-	Node* end = recursiveEnd(head);
-	if(end->getPrev() != NULL)
-	{
-		end->getPrev()->setNext(NULL);
-		delete end;
-	}
-	else
-	{
-		head = NULL;
-	}
 }
 
 //print postfix notation from a binary expression tree recursively
