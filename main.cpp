@@ -315,21 +315,21 @@ void printInfix(Node* head)
 {
 	if(head->getLeft() != NULL)
 	{
-	cout << "( ";
+	cout << "(";
 		printInfix(head->getLeft());
 	}
 	if(head->getToken()->getType() == NUM)
 	{
-		cout << head->getToken()->getNumber() << " ";
+		cout << head->getToken()->getNumber();
 	}
 	else
 	{
-		cout << head->getToken()->getChar() << " ";
+		cout << head->getToken()->getChar();
 	}
 	if(head->getRight() != NULL)
 	{
 		printInfix(head->getRight());
-		cout << ") ";
+		cout << ")";
 	}
 }
 
